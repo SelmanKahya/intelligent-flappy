@@ -118,10 +118,22 @@ export default class Game {
 
   // bir sonraki en yakin borunun koordinatlarini al
   getNextPipe = (bird) => {
+    let obstacle = {x:0, y:0, height:0};
     for (let i = 0; i < this.pipes.length; i++) {
       if (this.pipes[i].x > bird.x) {
-        return this.pipes[i];
+        obstacle.x = this.pipes[i].x;
+        obstacle.y = this.pipes[i].y;
+        obstacle.height = this.pipes[i].height;
       }
+      //eğer borunun içinde ise bir sonraki engel kuşun yarıçapı kadar uzaktaymış gibi davran
+      //böylece borunun içinden geçince yukarı veya aşağı çarpmaması sağlanacak
+      else if(this.pipes[i].x <= bird.x && this.pipes[i].x + this.pipes[i].width >= bird.x){
+        obstacle.x = Math.min(bird.x + 6, this.pipes[i].x + this.pipes[i].width);
+        obstacle.y = this.pipes[i].y;
+        obstacle.height = this.pipes[i].height;
+      }
+
+      return obstacle;
     }
   }
 
