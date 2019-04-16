@@ -18,7 +18,7 @@ export default class Bird {
       this.brain = brain.copy();
       this.mutate();
     } else {
-      this.brain = new NeuralNetwork(5, 5, 2);
+      this.brain = new NeuralNetwork(4, 5, 2);
     }
   }
 
@@ -39,7 +39,7 @@ export default class Bird {
 
   think = (pipeX, spaceStartY, spaceEndY) => {
     const inputs = [
-      ((pipeX - BIRD_START_X) / (WIDTH - BIRD_START_X)).toFixed(2),
+      //((pipeX - BIRD_START_X) / (WIDTH - BIRD_START_X)).toFixed(2),
       (spaceStartY / HEIGHT).toFixed(2),
       (spaceEndY / HEIGHT).toFixed(2),
       (this.y / HEIGHT).toFixed(2),
@@ -54,7 +54,7 @@ export default class Bird {
   mutate = () => {
     this.brain.mutate((x) => {
       if (Math.random() < 0.1) {
-        const offset = Math.random();
+        const offset = this.gaussian()*0.3;
         return x + offset;
       }
       return x;
@@ -63,5 +63,12 @@ export default class Bird {
 
   jump = () => {
     this.gravity = -3;
+  }
+  
+  gaussian() {
+	let xx = Math.random();
+	let yy = Math.random();
+	const PI = 3.14159265359;
+	return Math.sqrt(-2 * Math.log(xx))*Math.cos(2 * PI*yy);
   }
 }

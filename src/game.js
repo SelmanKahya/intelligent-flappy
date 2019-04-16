@@ -2,7 +2,7 @@
 import Bird from './models/bird';
 import Pipe from './models/pipe';
 import {
-  INITIAL_PIPE_SPACE, FPS, SPEED_MODE_FPS, WIDTH, HEIGHT, TOTAL_BIRDS,
+  INITIAL_PIPE_SPACE, FPS, SPEED_MODE_FPS, WIDTH, HEIGHT, TOTAL_BIRDS, PIPE_WIDTH
 } from './constants';
 
 export default class Game {
@@ -96,10 +96,11 @@ export default class Game {
     if (this.birds.length === 0) {
       let totalAge = 0;
       // tum kuslarin toplam yasini hesapla
-      this.deadBirds.forEach((deadBird) => { totalAge += deadBird.age; });
+      this.deadBirds.forEach((deadBird) => { totalAge += deadBird.age*deadBird.age; });
 
       // toplam yasi kullanarak her kus icin saglamlilik degeri ata
-      this.deadBirds.forEach((deadBird) => { deadBird.fitness = deadBird.age / totalAge; });
+      this.deadBirds.forEach((deadBird) => { deadBird.fitness = deadBird.age*deadBird.age / totalAge; });
+      this.deadBirds.sort(function(a, b){return b.fitness - a.fitness});
       this.startGame();
     }
   }
@@ -108,7 +109,8 @@ export default class Game {
   pickOne = () => {
     let index = 0;
     let r = Math.random();
-    while (r > 0) {
+    r = r*r; //lower index more likely
+    while (r >= 0) {
       r -= this.deadBirds[index].fitness;
       index += 1;
     }
@@ -119,7 +121,7 @@ export default class Game {
   // bir sonraki en yakin borunun koordinatlarini al
   getNextPipe = (bird) => {
     for (let i = 0; i < this.pipes.length; i++) {
-      if (this.pipes[i].x > bird.x) {
+      if (this.pipes[i].x + PIPE_WIDTH > bird.x) {
         return this.pipes[i];
       }
     }
@@ -153,5 +155,6 @@ export default class Game {
     this.ctx.fillText(`Jenerasyon: ${this.generationCount}`, 10, 15);
     this.ctx.fillText(`Kus sayisi: ${this.birds.length}`, 10, 30);
     this.ctx.fillText(`En iyi ilerleme: ${(this.highscore / 1000).toFixed(1)} sn`, 10, 45);
+    this.ctx.fillText(`Mevcut ilerleme: ${((Date.now() - this.gameStart) / 1000).toFixed(1)} sn`, 10, 60);
   }
 }
