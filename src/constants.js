@@ -3,7 +3,7 @@ export const HEIGHT = 250;
 export const WIDTH = 500;
 
 // her bir jenerasyon icin egitilecek kus sayisi
-export const TOTAL_BIRDS = 500;
+export const TOTAL_BIRDS = 250;
 
 // alt ve ust boru arasinda bosluk (seviye ilerledikce daraltilabilir)
 export const INITIAL_PIPE_SPACE = 60;
